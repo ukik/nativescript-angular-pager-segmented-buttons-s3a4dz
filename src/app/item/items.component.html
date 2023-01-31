@@ -1,0 +1,75 @@
+<ActionBar title="My App" flat="true"> </ActionBar>
+
+<GridLayout rows="auto, *">
+  <GridLayout
+    *rxLet="currentIndex$ as index"
+    columns="* * *"
+    colSpan="2"
+    padding="0 12 6 12"
+  >
+    <Button
+      *ngFor="
+        let name of ['Goalkeepers', 'Midfielders', 'Defenders'];
+        let i = index;
+        let first = first;
+        let last = last
+      "
+      [col]="i"
+      width="100%"
+      height="40"
+      borderWidth="1"
+      borderColor="#314162"
+      padding="0 5"
+      fontWeight="bold"
+      [borderRightWidth]="first ? 0 : 1"
+      [borderLeftWidth]="last ? 0 : 1"
+      [borderRadius]="first ? '4 0 0 4' : last ? '0 4 4 0' : '0 0 0 0'"
+      color="{{ index | colorTransition: i:'#fff':'#6d6d64' }}"
+      backgroundColor="{{ index | colorTransition: i:'#314162':'#fff' }}"
+      (tap)="onSelectedIndexChanged(i)"
+      >{{ name }}</Button
+    >
+  </GridLayout>
+
+  <Pager
+    row="1"
+    backgroundColor="#f1f1ef"
+    [selectedIndex]="1"
+    (loaded)="onPagerLoaded($event)"
+  >
+    <GridLayout *pagerItem>
+      <ng-container
+        *ngTemplateOutlet="listTemplate; context: { items: goalkeepers }"
+      >
+      </ng-container>
+    </GridLayout>
+    <GridLayout *pagerItem>
+      <ng-container
+        *ngTemplateOutlet="listTemplate; context: { items: midfielders }"
+      >
+      </ng-container>
+    </GridLayout>
+    <GridLayout *pagerItem>
+      <ng-container
+        *ngTemplateOutlet="listTemplate; context: { items: defenders }"
+      >
+      </ng-container>
+    </GridLayout>
+  </Pager>
+</GridLayout>
+
+<ng-template #listTemplate let-items="items">
+  <ListView [items]="items" ios:marginTop="16" separatorColor="transparent">
+    <ng-template let-item="item">
+      <StackLayout
+        [nsRouterLink]="['/item', item.id]"
+        class="border-t border-gray-400"
+      >
+        <Label
+          [text]="item.name"
+          class="text-lg text-gray-500 p-4 align-middle"
+        ></Label>
+      </StackLayout>
+    </ng-template>
+  </ListView>
+</ng-template>
